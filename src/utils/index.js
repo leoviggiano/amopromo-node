@@ -1,18 +1,13 @@
 /* eslint-disable no-await-in-loop */
-import {
-  addDays,
-  differenceInHours,
-  differenceInMinutes,
-  format,
-  parseISO,
-} from 'date-fns';
-import { ADD_DAYS } from '../config/constants';
+import { addDays, differenceInMinutes, format, parseISO } from 'date-fns';
+import { ADD_DAYS, LIMIT_DATA } from '../config/constants';
 import api from '../services/api';
 import auth from '../services/auth';
 
 import FlightController from '../app/controllers/FlightController';
 import Flight from '../app/models/Flight';
 
+// Função para calcular a distância entre 2 pontos
 function haversineDistance(coords1, coords2) {
   function toRad(x) {
     return (x * Math.PI) / 180;
@@ -41,7 +36,7 @@ function haversineDistance(coords1, coords2) {
 function getAllCombinations(airports) {
   const arr = Object.keys(airports).map((i) => i);
   // Limitar quantidade de aeroportos
-  arr.length = 20;
+  arr.length = LIMIT_DATA;
 
   // Calcular todas as possibilidades possiveis
   const allCombinations = {};
@@ -81,10 +76,15 @@ export default async function feedDatabase() {
   const { data: airports } = await api.get(`airports/${auth.key}`, { auth });
 
   const allCombinations = getAllCombinations(airports);
+  // Calcula todas as combinações de vôos faltando no banco de dados
   const missingFlights = await findMissingFlights(allCombinations);
+
+  // Adiciona 40 dias da data atual
   const targetDate = addDays(new Date(), ADD_DAYS);
+  // Formata a data recebida para usar na api
   const formattedDate = format(targetDate, 'yyyy-MM-dd');
 
+  // Itera o array de vôos faltando para montar e inserir no banco de dados
   missingFlights.forEach(async (flight) => {
     // Key = IATA
     const { departureKey, arrivalKey } = flight;
@@ -108,7 +108,7 @@ export default async function feedDatabase() {
     } = options.find(
       (k) => k.fare_price === Math.min(...options.map((l) => l.fare_price))
     );
-    const pricePerKm = fare_price / distance;
+    const pricePerKm = (fare_price / distance).toFixed(3);
     const flightDuration = differenceInMinutes(
       parseISO(arrival_time),
       parseISO(departure_time)

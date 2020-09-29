@@ -5,6 +5,13 @@ class FlightController {
     Flight.create(flightData);
   }
 
+  highestDuration(quantity) {
+    return Flight.findAll({
+      limit: quantity,
+      order: [['flight_duration', 'DESC']],
+    });
+  }
+
   lastFlight() {
     return Flight.findAll({ limit: 1, order: [['created_at', 'DESC']] });
   }
