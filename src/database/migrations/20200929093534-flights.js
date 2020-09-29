@@ -31,6 +31,31 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+
+      price_per_km: {
+        type: Sequelize.DOUBLE({ decimals: 2 }),
+        allowNull: false,
+      },
+
+      arrival_iata: {
+        type: Sequelize.CHAR(3),
+        allowNull: false,
+      },
+
+      departure_iata: {
+        type: Sequelize.CHAR(3),
+        allowNull: false,
+      },
+
+      average_speed: {
+        type: Sequelize.FLOAT,
+        allowNull: false,
+      },
+
+      flight_duration: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
     });
   },
 

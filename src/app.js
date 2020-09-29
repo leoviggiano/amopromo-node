@@ -2,6 +2,7 @@ import express from 'express';
 import routes from './routes';
 
 import './database';
+import feedDatabase from './utils';
 
 require('dotenv/config');
 
@@ -10,6 +11,7 @@ class App {
     this.server = express();
     this.middlewares();
     this.routes();
+    feedDatabase();
   }
 
   middlewares() {
