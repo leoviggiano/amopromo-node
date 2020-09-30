@@ -5,8 +5,9 @@ class AirportController {
   async store(airportData) {
     const { iata } = airportData;
     const hasAirport = await Airport.findOne({ where: { iata } });
-    if (hasAirport) return;
-    Airport.create(airportData);
+
+    if (hasAirport) return null;
+    return Airport.create(airportData);
   }
 
   storeAll(airports) {

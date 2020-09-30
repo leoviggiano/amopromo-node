@@ -2,7 +2,7 @@ import Flight from '../models/Flight';
 
 class FlightController {
   store(flightData) {
-    Flight.create(flightData);
+    return Flight.create(flightData);
   }
 
   highestDuration(quantity) {
