@@ -1,8 +1,41 @@
 import Flight from '../models/Flight';
 
 class FlightController {
-  store(flightData) {
+  async store(flightData) {
     return Flight.create(flightData);
+  }
+
+  async showOrderedByFlightDuration(req, res) {
+    const { limit = 30 } = req.body;
+    const flights = await Flight.findAll({
+      order: [['flight_duration', 'DESC']],
+      attributes: [
+        'flight_duration',
+        'aircraft_manufacturer',
+        'aircraft_model',
+        'departure_iata',
+        'arrival_iata',
+      ],
+      limit,
+    });
+
+    return res.json(flights);
+  }
+
+  /**
+   *
+   * @param {Object} options
+   * Recebe IATA para procurar
+   * OrderBy para ordenar
+   */
+  searchFlight(options) {
+    const { iata, orderBy } = options;
+
+    return Flight.findAll({
+      where: { departure_iata: iata },
+      order: [['flight_duration', orderBy]],
+      limit: 1,
+    });
   }
 
   highestDuration(quantity) {

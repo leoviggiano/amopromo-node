@@ -1,5 +1,6 @@
 import sequelize from 'sequelize';
 import Airport from '../models/Airport';
+import FlightController from './FlightController';
 
 class AirportController {
   async store(airportData) {
@@ -17,7 +18,45 @@ class AirportController {
     });
   }
 
-  countAirportsByCities(limit = 1) {
+  async showAllAirportsWithDestiny(req, res) {
+    const allAirports = await Airport.findAll();
+
+    const returnAirports = await Promise.all(
+      allAirports.map(async (airport) => {
+        const { iata } = airport;
+        const highestFlight = await FlightController.searchFlight({
+          iata,
+          orderBy: 'DESC',
+        });
+
+        const lowestFlight = await FlightController.searchFlight({
+          iata,
+          orderBy: 'ASC',
+        });
+
+        const highest =
+          highestFlight.length > 0
+            ? highestFlight[0].arrival_iata
+            : 'Não há vôo disponível';
+
+        const lowest =
+          lowestFlight.length > 0
+            ? lowestFlight[0].arrival_iata
+            : 'Não há vôo disponível';
+
+        return {
+          from: iata,
+          highest,
+          lowest,
+        };
+      })
+    );
+
+    return res.json(returnAirports);
+  }
+
+  async countAirportsByCities(req, res) {
+    const { limit = 1 } = req.body;
     /**
      * Attributes é basicamente as colunas que serão geradas, então estou querendo visualizar as colunas "city" e "count",
      * Sendo que a coluna 'count' recebe a função 'count' que atua na coluna 'city'
@@ -27,7 +66,7 @@ class AirportController {
      * E limit é limitar a consulta para X resultados
      */
 
-    return Airport.findAll({
+    const airportCounting = await Airport.findAll({
       attributes: [
         'city',
         [sequelize.fn('count', sequelize.col('city')), 'count'],
@@ -36,6 +75,8 @@ class AirportController {
       order: [['count', 'DESC']],
       limit,
     });
+
+    return res.json(airportCounting);
   }
 }
 

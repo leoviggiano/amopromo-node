@@ -49,7 +49,7 @@ export function deleteElement(arr, val) {
 }
 
 export function getAllCombinations(airports) {
-  const arr = Object.keys(airports).map((i) => i);
+  const arr = airports.map((i) => i.dataValues.iata);
   // Limitar quantidade de aeroportos
   arr.length = LIMIT_DATA;
 
