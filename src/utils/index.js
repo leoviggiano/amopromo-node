@@ -4,8 +4,11 @@ import { ADD_DAYS, LIMIT_DATA } from '../config/constants';
 import api from '../services/api';
 import auth from '../services/auth';
 
-import FlightController from '../app/controllers/FlightController';
 import Flight from '../app/models/Flight';
+import Airport from '../app/models/Airport';
+
+import FlightController from '../app/controllers/FlightController';
+import AirportController from '../app/controllers/AirportController';
 
 // Função para calcular a distância entre 2 pontos
 function haversineDistance(coords1, coords2) {
@@ -95,6 +98,7 @@ async function findMissingFlights(airports) {
 
 export default async function feedDatabase() {
   const { data: airports } = await api.get(`airports/${auth.key}`, { auth });
+  AirportController.storeAll(airports);
 
   const allCombinations = getAllCombinations(airports);
   const missingFlights = await findMissingFlights(allCombinations);

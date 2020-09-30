@@ -2,8 +2,9 @@ import Sequelize from 'sequelize';
 import databaseConfig from '../config/database';
 
 import Flight from '../app/models/Flight';
+import Airport from '../app/models/Airport';
 
-const models = [Flight];
+const models = [Flight, Airport];
 
 class Database {
   constructor() {

@@ -1,9 +1,16 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('airports', {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+
       iata: {
         type: Sequelize.CHAR(3),
-        primaryKey: true,
+        allowNull: false,
+        unique: true,
       },
 
       city: {
