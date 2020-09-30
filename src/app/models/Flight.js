@@ -19,6 +19,7 @@ class Flight extends Model {
         sequelize,
       }
     );
+    return this;
   }
 }
 
