@@ -7,7 +7,8 @@ module.exports = {
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   port: process.env.DB_PORT,
-  logging: console.log,
+  logging: false,
+  // logging: console.log,
   define: {
     timestamps: false,
     underscored: true,

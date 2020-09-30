@@ -13,7 +13,7 @@ module.exports = {
       },
 
       lowest_price: {
-        type: Sequelize.DOUBLE({ decimals: 2 }),
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
 
@@ -33,7 +33,7 @@ module.exports = {
       },
 
       price_per_km: {
-        type: Sequelize.DOUBLE({ decimals: 2 }),
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
 

@@ -33,20 +33,41 @@ function haversineDistance(coords1, coords2) {
   return d.toFixed(3);
 }
 
+function deleteElement(arr, val) {
+  /**
+   * Tomei a decisão de usar esse método para remover pois é mais eficiente que filter/slice/splice, e estamos lidando com grande carga de valores
+   *
+   * 1, 2, 3 ,4 ,5 -> 3 (remover o 3)
+   * 1, 2, 4, 5 (J não iterou quando achou o 3, logo ele foi sobrescrito pelo próximo, e então, seta o length = j para não haver valores repetidos)
+   */
+
+  let j = 0;
+  for (let i = 0, l = arr.length; i < l; i += 1) {
+    if (arr[i] !== val) {
+      arr[j] = arr[i];
+      j += 1;
+    }
+  }
+  arr.length = j;
+  return arr;
+}
+
 function getAllCombinations(airports) {
   const arr = Object.keys(airports).map((i) => i);
   // Limitar quantidade de aeroportos
   arr.length = LIMIT_DATA;
 
-  // Calcular todas as possibilidades possiveis
+  // IATA : [Combinações]
   const allCombinations = {};
+
+  /**
+   * Basicamente a array de aeroportos irá ser iterada, setando a IATA como chave do objeto,
+   * e seu valor sendo a array copiada removendo a sua própria IATA, pois não há como o destino
+   * e partida serem o iguais
+   */
+
   arr.forEach((i) => {
-    allCombinations[i] = [];
-    arr.forEach((j) => {
-      if (i === j) return;
-      const departureIata = airports[j].iata;
-      allCombinations[i].push(departureIata);
-    });
+    allCombinations[i] = deleteElement([...arr], i);
   });
 
   return allCombinations;
@@ -76,7 +97,6 @@ export default async function feedDatabase() {
   const { data: airports } = await api.get(`airports/${auth.key}`, { auth });
 
   const allCombinations = getAllCombinations(airports);
-  // Calcula todas as combinações de vôos faltando no banco de dados
   const missingFlights = await findMissingFlights(allCombinations);
 
   // Adiciona 40 dias da data atual
@@ -100,14 +120,15 @@ export default async function feedDatabase() {
     const coords1 = { lat: from.lat, lon: from.lon };
     const coords2 = { lat: to.lat, lon: to.lon };
     const distance = haversineDistance(coords1, coords2);
+    const lowestPrice = Math.min(...options.map((l) => l.fare_price));
+
     const {
       fare_price,
       departure_time,
       arrival_time,
       aircraft: { model, manufacturer },
-    } = options.find(
-      (k) => k.fare_price === Math.min(...options.map((l) => l.fare_price))
-    );
+    } = options.find((k) => k.fare_price === lowestPrice);
+
     const pricePerKm = (fare_price / distance).toFixed(3);
     const flightDuration = differenceInMinutes(
       parseISO(arrival_time),
