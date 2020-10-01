@@ -46,8 +46,8 @@ class AirportController {
 
         return {
           from: iata,
-          highest,
-          lowest,
+          highest_iata: highest,
+          lowest_iata: lowest,
         };
       })
     );
