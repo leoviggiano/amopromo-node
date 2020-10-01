@@ -19,7 +19,7 @@ class FlightController {
       limit,
     });
 
-    return res.json(flights);
+    return res.status(200).json(flights);
   }
 
   /**

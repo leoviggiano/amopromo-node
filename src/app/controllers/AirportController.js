@@ -52,7 +52,7 @@ class AirportController {
       })
     );
 
-    return res.json(returnAirports);
+    return res.status(200).json(returnAirports);
   }
 
   async countAirportsByCities(req, res) {
@@ -76,7 +76,7 @@ class AirportController {
       limit,
     });
 
-    return res.json(airportCounting);
+    return res.status(200).json(airportCounting);
   }
 }
 
