@@ -10,14 +10,14 @@ routes.get('/', (req, res) => {
 });
 
 // Airport
-routes.get('/airport/cities/count', AirportController.countAirportsByCities);
-routes.get('/airport/flights', AirportController.showAllAirportsWithDestiny);
+routes.get('/airports/count', AirportController.countAirportsByCities);
+routes.get('/airports/distance', AirportController.showAllAirportsWithDestiny);
 
 // Flights
-routes.get('/flights', FlightController.showOrderedByFlightDuration);
+routes.get('/flights/duration', FlightController.showOrderedByFlightDuration);
 
 // Seeds
-routes.post('/seeds/flights', SeedController.storeFlights);
-routes.post('/seeds/airports', SeedController.storeAirports);
+routes.post('/flights/seeds', SeedController.storeFlights);
+routes.post('/airports/seeds', SeedController.storeAirports);
 
 export default routes;

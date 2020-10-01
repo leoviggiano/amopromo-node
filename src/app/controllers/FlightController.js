@@ -15,6 +15,7 @@ class FlightController {
         'aircraft_model',
         'departure_iata',
         'arrival_iata',
+        'distance',
       ],
       limit,
     });
