@@ -33,7 +33,7 @@ class FlightController {
 
     return Flight.findAll({
       where: { departure_iata: iata },
-      order: [['flight_duration', orderBy]],
+      order: [['distance', orderBy]],
       limit: 1,
     });
   }
