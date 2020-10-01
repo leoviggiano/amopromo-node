@@ -1,0 +1,10 @@
+postgres:
+  image: postgres:12.4
+  container_name: amopromonodedb
+  restart: always
+  ports: 
+    - 5436:5432
+  environment:
+    - POSTGRES_DB=amopromonodedb
+    - POSTGRES_PASSWORD=amopromo
+    - POSTGRES_USER=amopromonodedb
